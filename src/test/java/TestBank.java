@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.*;
+
 @DisplayName("Tests for Bank Account")
 public class TestBank {
 
@@ -34,6 +36,7 @@ public class TestBank {
     @Test
     public void testActiveAccount(){
         BankAccount bankAccount = new BankAccount(500, -1000);
+        assumeTrue(bankAccount != null);
         assertTrue(bankAccount.getActive());
     }
 
@@ -41,7 +44,7 @@ public class TestBank {
     public void testAccountHolderNameSet(){
         BankAccount bankAccount = new BankAccount(500, -1000);
         bankAccount.setAccountHolderName("Matt");
-        assertNotNull((bankAccount.getAccountHolderName()));
+        assumingThat(bankAccount.getAccountHolderName() == null, () -> assertEquals("Matt", bankAccount.getAccountHolderName()));
     }
 
     @Test
@@ -66,5 +69,13 @@ public class TestBank {
     public void testDepositTimeout(){
         BankAccount bankAccount = new BankAccount(300,-300);
         assertTimeout(Duration.ofNanos(1), () -> bankAccount.deposit(400));
+    }
+
+    @Test
+    public void failedAssumption(){
+        BankAccount bankAccount = new BankAccount(300,-300);
+        assumeTrue(bankAccount == null);
+        assertTrue(bankAccount != null);
+
     }
 }
